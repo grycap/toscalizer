@@ -17,6 +17,7 @@ import click
 import json as json_dumps
 
 from get_images import GetImages
+from get_endpoints import GetEndPoints
 
 
 @click.group()
@@ -36,8 +37,20 @@ def get_images(tosca_template, json):
             print(image)
 
 
-toscalizer_cli.add_command(get_images)
+@click.command()
+@click.argument('tosca_template', type=click.Path(exists=True))
+@click.option('--json', '-j', help='Output the result in JSON format', is_flag=True)
+def get_ports(tosca_template, json):
+    ports = GetEndPoints(tosca_template).get_ports()
+    if json:
+        print(json_dumps.dumps(ports))
+    else:
+        for port in ports:
+            print("%s: %s" % (port['protocol'], port['source']))
 
+
+toscalizer_cli.add_command(get_images)
+toscalizer_cli.add_command(get_ports)
 
 if __name__ == '__main__':
     toscalizer_cli()

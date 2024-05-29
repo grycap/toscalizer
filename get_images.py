@@ -1,7 +1,19 @@
+# Copyright (C) GRyCAP - I3M - UPV
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 import yaml
-import sys
 from toscaparser.tosca_template import ToscaTemplate
-from toscaparser.functions import Function, is_function, get_function
+from utils import final_function_result
 
 
 class GetImages:
@@ -28,25 +40,6 @@ class GetImages:
 
         return False
 
-    @staticmethod
-    def _final_function_result(tosca, func, node):
-        """
-        Take a translator.toscalib.functions.Function and return the final result
-        (in some cases the result of a function is another function)
-        """
-        if not isinstance(func, (Function, dict, list)):
-            return func
-        elif isinstance(func, Function):
-            return func.result()
-        else:
-            if is_function(func):
-                func = get_function(tosca, node, func)
-                return func.result()
-            else:  # a plain dict
-                for k, v in func.items():
-                    func[k] = GetImages._final_function_result(v, node)
-                return func
-
     def get_container_images(self):
         images = []
 
@@ -56,12 +49,13 @@ class GetImages:
 
                 for artifact in list(artifacts.values()):
                     if artifact.get('type') == 'tosca.artifacts.Deployment.Image.Container.Docker':
-                        images.append(self._final_function_result(self.tosca, artifact.get('file'), node))
+                        images.append(final_function_result(self.tosca, artifact.get('file'), node))
 
         return images
 
 
 if __name__ == "__main__":
+    import sys
     images = GetImages(sys.argv[1]).get_container_images()
     for image in images:
         print(image)
