@@ -28,29 +28,28 @@ def toscalizer_cli():
 @click.command()
 @click.argument('tosca_template', type=click.Path(exists=True))
 @click.option('--json', '-j', help='Output the result in JSON format', is_flag=True)
-def get_images(tosca_template, json):
-    images = GetImages(tosca_template).get_container_images()
+def analyze(tosca_template, json):
+    res = {}
+    res["images"] = GetImages(tosca_template).get_container_images()
+    res["ports"] = GetEndPoints(tosca_template).get_ports()
+    res["tosca_type"] = "OpenStack"
+    if res["images"]:
+        res["tosca_type"] = "Kubernetes"
+
     if json:
-        print(json_dumps.dumps(images))
+        print(json_dumps.dumps(res))
     else:
-        for image in images:
+        print("Tosca type: %s" % res["tosca_type"])
+        for image in res["images"]:
+            print("Images:")
             print(image)
-
-
-@click.command()
-@click.argument('tosca_template', type=click.Path(exists=True))
-@click.option('--json', '-j', help='Output the result in JSON format', is_flag=True)
-def get_ports(tosca_template, json):
-    ports = GetEndPoints(tosca_template).get_ports()
-    if json:
-        print(json_dumps.dumps(ports))
-    else:
-        for port in ports:
+        for port in res["ports"]:
+            print("Ports:")
             print("%s: %s" % (port['protocol'], port['source']))
 
 
-toscalizer_cli.add_command(get_images)
-toscalizer_cli.add_command(get_ports)
+toscalizer_cli.add_command(analyze)
+
 
 if __name__ == '__main__':
     toscalizer_cli()
