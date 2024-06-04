@@ -13,7 +13,7 @@
 # limitations under the License.
 import yaml
 from toscaparser.tosca_template import ToscaTemplate
-from utils import get_node_endpoints, final_function_result
+from utils import get_node_endpoints, final_function_result, find_host_node
 
 
 class GetEndPoints:
@@ -23,21 +23,26 @@ class GetEndPoints:
         self.tosca = ToscaTemplate(yaml_dict_tpl=template)
 
     def get_ports(self):
-        endpoints = []
+        endpoints = {}
 
         for node in self.tosca.nodetemplates:
-            node_endpoints = get_node_endpoints(node, self.tosca.nodetemplates)
-            endpoints.extend(node_endpoints)
+            host_node = find_host_node(node, self.tosca.nodetemplates)
+            if host_node:
+                if host_node.name not in endpoints:
+                    endpoints[host_node.name] = []
+                endpoints[host_node.name].extend(get_node_endpoints(node, self.tosca.nodetemplates))
 
-        ports = []
+        ports = {}
 
-        for endpoint in endpoints:
-            cap_props = endpoint.get_properties()
-            if cap_props and "ports" in cap_props:
-                node_ports = final_function_result(self.tosca, cap_props["ports"].value, node)
-                if node_ports:
-                    for p in node_ports.values():
-                        ports.append(p)
+        for node_name, node_endpoints in endpoints.items():
+            for endpoint in node_endpoints:
+                cap_props = endpoint.get_properties()
+                if cap_props and "ports" in cap_props:
+                    node_ports = final_function_result(self.tosca, cap_props["ports"].value, node)
+                    if node_ports:
+                        if node_name not in ports:
+                            ports[node_name] = []
+                        ports[node_name].extend(list(node_ports.values()))
 
         return ports
 
@@ -45,5 +50,4 @@ class GetEndPoints:
 if __name__ == "__main__":
     import sys
     ports = GetEndPoints(sys.argv[1]).get_ports()
-    for port in ports:
-        print(port)
+    print(ports)

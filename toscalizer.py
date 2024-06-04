@@ -37,15 +37,17 @@ def analyze(tosca_template, json):
         res["tosca_type"] = "Kubernetes"
 
     if json:
-        print(json_dumps.dumps(res))
+        print(json_dumps.dumps(res, indent=2))
     else:
         print("Tosca type: %s" % res["tosca_type"])
         for image in res["images"]:
             print("Images:")
             print(image)
-        for port in res["ports"]:
-            print("Ports:")
-            print("%s: %s" % (port['protocol'], port['source']))
+        for node in res["ports"].keys():
+            print("Node: %s" % node)
+            for port in res["ports"][node]:
+                print("Ports:")
+                print("%s: %s" % (port['protocol'], port['source']))
 
 
 toscalizer_cli.add_command(analyze)
