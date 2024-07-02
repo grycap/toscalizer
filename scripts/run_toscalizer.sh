@@ -48,7 +48,7 @@ else
     #InfrastructureManager auth
     type = InfrastructureManager; username = user; password = pass
     #Ramses
-    id = one; type = OpenNebula; host = ramses.i3m.upv.es:2633; username = asanchez; password = RamsesOpenNebula9
+    id = one; type = OpenNebula; host = ramses.i3m.upv.es:2633; username = xxx; password = xxx
 EOF
 
     # Run im_client.py create and capture the output
