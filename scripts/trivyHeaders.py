@@ -29,9 +29,10 @@ def process_data(input_data):
     return filter_dict(input_data, HEADERS)
 
 def main():
-    parser = argparse.ArgumentParser(description='Process input JSON and output to trivy-report.json with specific headers.')
+    parser = argparse.ArgumentParser(description='Process input JSON and output to specified JSON file with specific headers.')
     parser.add_argument('input_file', type=str, help='Input JSON file')
-    
+    parser.add_argument('output_file', type=str, help='Output JSON file')
+
     args = parser.parse_args()
     
     # Read the input JSON file
@@ -42,7 +43,7 @@ def main():
     output_data = process_data(input_data)
     
     # Write the output JSON file
-    output_file = os.path.expanduser('/tmp/scan/trivy-report.json')
+    output_file = os.path.expanduser(args.output_file)
     with open(output_file, 'w') as outfile:
         json.dump(output_data, outfile, indent=4)
     
