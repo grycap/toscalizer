@@ -37,12 +37,22 @@ class GetEndPoints:
         for node_name, node_endpoints in endpoints.items():
             for endpoint in node_endpoints:
                 cap_props = endpoint.get_properties()
+                if cap_props and "network_name" in cap_props:
+                    node_network = final_function_result(self.tosca, cap_props["network_name"].value, node)
+                    if "PUBLIC" in node_network:
+                        if node_name not in ports:
+                            ports[node_name] = []
+                        ssh_port = {'protocol': 'tcp', 'source': 22}
+                        if ssh_port not in ports[node_name]:
+                            ports[node_name].append(ssh_port)
                 if cap_props and "ports" in cap_props:
                     node_ports = final_function_result(self.tosca, cap_props["ports"].value, node)
                     if node_ports:
                         if node_name not in ports:
                             ports[node_name] = []
-                        ports[node_name].extend(list(node_ports.values()))
+                        for node_port in list(node_ports.values()):
+                            if node_port not in ports[node_name]:
+                                ports[node_name].append(node_port)
 
         return ports
 
