@@ -127,6 +127,10 @@ topology_template:
                 protocol: tcp
                 source: 443
                 remote_cidr: { get_input: kube_allowed_cidr }
+              k8s_api_port:
+                protocol: tcp
+                source: 6443
+                remote_cidr: { get_input: kube_allowed_cidr }
       properties:
         admin_username: kubeuser
         install_nfs_client: true
