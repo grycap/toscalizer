@@ -149,10 +149,6 @@ topology_template:
           properties:
             count:
               get_input: num_instances
-      interfaces:
-        Standard:
-          configure:
-            implementation: https://raw.githubusercontent.com/grycap/tosca/main/artifacts/dummy.yml
       properties:
         instance_name: mlflow_simple_node
       requirements:
