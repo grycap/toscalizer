@@ -31,7 +31,7 @@ topology_template:
       required: false
       type: string
     mlflow_s3_ak:
-      default: ''
+      default: ""
       description: MLFlow S3 Access Key
       required: false
       type: string
@@ -41,13 +41,13 @@ topology_template:
       required: false
       type: string
     mlflow_s3_endpoint:
-      default: ''
+      default: ""
       description: MLFlow S3 endpoint (in case of MinIO server). If not provided,
         artifacts will be stored locally.
       required: false
       type: string
     mlflow_s3_sk:
-      default: ''
+      default: ""
       description: MLFlow S3 Secret Key
       required: false
       type: string

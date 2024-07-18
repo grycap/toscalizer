@@ -56,11 +56,11 @@ topology_template:
     wn_gpu_vendor:
       type: string
       description: GPU Vendor
-      default: ''
+      default: ""
     wn_gpu_model:
       type: string
       description: GPU Model
-      default: ''
+      default: ""
     wn_instance_type:
       type: string
       description: Flavor name for the WNs
@@ -94,7 +94,7 @@ topology_template:
       default: false
     kube_cert_user_email:
       type: string
-      description: Email to be used in the Let's Encrypt issuer
+      description: Email to be used in the Let"s Encrypt issuer
       default: "jhondoe@server.com"
     kube_public_dns_name:
       type: string
@@ -212,10 +212,10 @@ topology_template:
 
   outputs:
     dashboard_endpoint:
-      value: { concat: [ 'https://', get_attribute: [ front, public_address, 0 ], '/dashboard/' ] }
+      value: { concat: [ "https://", get_attribute: [ front, public_address, 0 ], "/dashboard/" ] }
     dashboard_dns_endpoint:
-      value: { concat: [ 'https://', get_input: kube_public_dns_name, '/dashboard/' ] }
+      value: { concat: [ "https://", get_input: kube_public_dns_name, "/dashboard/" ] }
     api_endpoint:
-      value: { concat: [ 'https://', get_attribute: [ front, public_address, 0 ], ':6443' ] }
+      value: { concat: [ "https://", get_attribute: [ front, public_address, 0 ], ":6443" ] }
     kubeconfig:
       value: { get_attribute: [ front, ansible_output, lrms_front_end_front_conf_front, tasks, kube_conf, output ] }
