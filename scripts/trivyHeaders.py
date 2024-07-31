@@ -28,6 +28,28 @@ def process_data(input_data):
     """
     return filter_dict(input_data, HEADERS)
 
+def get_higher_severity(input_data):
+    """
+    Get the highest severity of the vulnerabilities.
+    """
+    SeverityMap = {
+        "CRITICAL": 5,
+        "HIGH": 4,
+        "MEDIUM": 3,
+        "LOW": 2,
+        "UNKNOWN": 1,
+        "N/A": 0
+    }
+    high_serverity = 0
+    for result in input_data["Results"]:
+        vulnerabilities = result["Vulnerabilities"]
+        if vulnerabilities:
+            severity = [SeverityMap[vuln["Severity"]] for vuln in vulnerabilities]
+            local_max = max(severity)
+            if local_max > high_serverity:
+                high_serverity = local_max
+    return list(SeverityMap.keys())[list(SeverityMap.values()).index(high_serverity)]
+
 def main():
     parser = argparse.ArgumentParser(description='Process input JSON and output to specified JSON file with specific headers.')
     parser.add_argument('input_file', type=str, help='Input JSON file')
@@ -42,6 +64,9 @@ def main():
     # Process the data
     output_data = process_data(input_data)
     
+    high_serverity = get_higher_severity(output_data)
+    output_data["HighSeverity"] = high_serverity
+
     # Write the output JSON file
     output_file = os.path.expanduser(args.output_file)
     with open(output_file, 'w') as outfile:
