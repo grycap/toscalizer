@@ -30,9 +30,9 @@ def main():
     severities = []
     for input_file in args.input_file:
         with open(input_file, 'r') as infile:
-            severities.append(json.load(infile)['HighSeverity'])
+            severities.append(json.load(infile)['MaxSeverity'])
     high_serverity = get_higher_severity(severities)
-    output_data = {"HighSeverity": high_serverity}
+    output_data = {"MaxSeverity": high_serverity}
     # Write the output JSON file
     output_file = os.path.expanduser(args.output_file)
     with open(output_file, 'w') as outfile:

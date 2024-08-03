@@ -67,7 +67,7 @@ def main():
     output_data = process_data(input_data)
     
     high_serverity = get_higher_severity(output_data)
-    output_data["HighSeverity"] = high_serverity
+    output_data["MaxSeverity"] = high_serverity
 
     # Write the output JSON file
     output_file = os.path.expanduser(args.output_file)
