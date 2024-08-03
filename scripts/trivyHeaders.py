@@ -42,7 +42,9 @@ def get_higher_severity(input_data):
     }
     high_serverity = 0
     for result in input_data["Results"]:
-        vulnerabilities = result["Vulnerabilities"]
+        vulnerabilities = []
+        if "Vulnerabilities" in result:
+            vulnerabilities = result["Vulnerabilities"]
         if vulnerabilities:
             severity = [SeverityMap[vuln["Severity"]] for vuln in vulnerabilities]
             local_max = max(severity)
